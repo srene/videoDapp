@@ -29,6 +29,8 @@ contract VideoMarketPlace is Ownable,PullPayment {
 
     mapping(uint256 => Listing) public listings;
 
+    mapping(address => uint256) public sales;
+
     /// @notice Constructor function
     /// @param tokenName Name of the token used for payment
     /// @param tokenSymbol Symbol of the token used for payment
@@ -68,8 +70,9 @@ contract VideoMarketPlace is Ownable,PullPayment {
             revert InsufficentFunds();
         }
         _asyncTransfer(listing.seller, msg.value);
+        //sales[msg.sender]=nftId;
         //uint256 requestId = oracle.requestReencryption(cipherId, buyerPublicKey);
-        //emit NewSale(msg.sender, listing.seller, requestId, cipherId);
+        //emit NewSale(msg.sender, listing.seller, nftId, nftId);
         return listing.uri;
     }
 

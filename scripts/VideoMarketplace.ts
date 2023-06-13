@@ -1,15 +1,13 @@
 import * as readline from 'readline';
 import { ethers } from "hardhat";
-import { VideoMarketPlaceERC20Token, VideoMarketPlaceERC20Token__factory} from "../typechain-types";
+import { VideoMarketPlace, VideoMarketPlace__factory} from "../typechain-types";
 import { VideoMarketPlaceERC20Token, VideoMarketPlaceERC20Token__factory} from "../typechain-types";
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
-
-let contract: Lottery;
+let contract: VideoMarketPlace;
 let token: VideoMarketPlaceERC20Token;
 let accounts: SignerWithAddress[];
 
-const BET_PRICE = 1;
 const BET_FEE = 0.2;
 const TOKEN_RATIO = 1;
 
@@ -25,13 +23,13 @@ async function main() {
 
 async function initAccounts() {
   accounts = await ethers.getSigners();
-
+  console.log(accounts);
 }
 
 
 async function initContracts() {
-  const contractFactory = new Lottery__factory(accounts[0]);
-  contract = await contractFactory.deploy("LotteryToken","LTO",TOKEN_RATIO,ethers.utils.parseEther(BET_PRICE.toFixed(10)),ethers.utils.parseEther(BET_FEE.toFixed(10)));
+  const contractFactory = new VideoMarketPlace__factory(accounts[0]);
+  contract = await contractFactory.deploy("VideoListToken","VLT",TOKEN_RATIO,ethers.utils.parseEther(BET_FEE.toFixed(10)));
   await contract.deployed(); 
   const tokenAddress = await contract.paymentToken();
   const tokenFactory = new VideoMarketPlaceERC20Token__factory();
@@ -40,6 +38,9 @@ async function initContracts() {
   console.log("Deployed Token contract to address "+token.address);
 }
 
+async function listVideos() {
+
+}
 
 async function mainMenu(rl: readline.Interface) {
   menuOptions(rl);
@@ -56,7 +57,7 @@ function menuOptions(rl: readline.Interface) {
           rl.close();
           return;
         case 1:
-          //await checkState();
+          await listVideos();
           mainMenu(rl);
           break;
         case 2:
