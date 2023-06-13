@@ -56,17 +56,17 @@ async function main() {
     // a URL to the full image.
     const files = []
 
-    /*const obj = { id: 'id', name:'Big_Buck_Bunny_1080_10s_5MB.mp4', screenshot:'Big.Buck.Bunny.-.Bunny.Portrait.png', description:'sample video'}
-    const blob = new Blob([JSON.stringify(obj)], { type: 'application/json' })
+    //const obj = { id: 'id', name:'Big_Buck_Bunny_1080_10s_5MB.mp4', screenshot:'Big.Buck.Bunny.-.Bunny.Portrait.png', description:'sample video'}
+    //const blob = new Blob([JSON.stringify(obj)], { type: 'application/json' })
   
-    const metadataFile = new File([blob], 'metadata.json')
+    //const metadataFile = new File([blob], 'metadata.json')
+    const json = await getFilesFromPath("/Users/srene/Desktop/metadata.json")
+    files.push(...json)
 
-    files.push(metadataFile)*/
-
-    const image = await getFilesFromPath("/home/sergi/Desktop/Big.Buck.Bunny.-.Bunny.Portrait.png")
+    const image = await getFilesFromPath("/Users/srene/Desktop/Big.Buck.Bunny.-.Bunny.Portrait.png")
     files.push(...image)
 
-    const video = await getFilesFromPath("/home/sergi/Desktop/Big_Buck_Bunny_1080_10s_5MB.mp4")
+    const video = await getFilesFromPath("/Users/srene/Desktop/Big_Buck_Bunny_1080_10s_5MB.mp4")
     files.push(...video)
 
     const token = process.env.WEB3_STORAGE_TOKEN;

@@ -39,7 +39,15 @@ async function initContracts() {
 }
 
 async function listVideos() {
+  const list = await contract.listings(0);
+  console.log(list);
+}
 
+async function addVideo() {
+
+  const tx = await contract.createListing(ethers.utils.parseEther("0.001"),"bafybeig25u4k34jyxl3osbk3eexk3osmz7udpk2xazqromn4nivqnjymwa");
+  const receipt = await tx.wait();
+  console.log(`Video added (${receipt.transactionHash}) `);
 }
 
 async function mainMenu(rl: readline.Interface) {
@@ -61,7 +69,7 @@ function menuOptions(rl: readline.Interface) {
           mainMenu(rl);
           break;
         case 2:
-          //await checkState();
+          await addVideo();
           mainMenu(rl);
           break;
         case 3:
