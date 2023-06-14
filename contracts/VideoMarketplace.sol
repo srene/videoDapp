@@ -12,7 +12,7 @@ error CallbackNotAuthorized();
 error ListingDoesNotExist();
 error InsufficentFunds();
 
-contract VideoMarketPlace is Ownable,PullPayment {
+contract VideoMarketPlace is Ownable {
 
     struct Listing {
         uint256 nftId;
@@ -31,10 +31,12 @@ contract VideoMarketPlace is Ownable,PullPayment {
 
     Listing[] public listings;
 
-    //mapping(uint256 => Listing) public listings;
+    mapping(uint256 => Listing) public listingsMap;
 
     mapping(address => uint256) public sales;
 
+    event NewSale(address indexed buyer, address indexed seller, uint256 nftId, string uri);
+    event NewListing(address indexed seller, uint256 indexed nftId, /*string name, string description,*/ uint256 price, string uri);
     /// @notice Constructor function
     /// @param tokenName Name of the token used for payment
     /// @param tokenSymbol Symbol of the token used for payment
@@ -56,35 +58,52 @@ contract VideoMarketPlace is Ownable,PullPayment {
     function createListing(
         uint256 price,
         string calldata uri
-    ) external /*returns (uint256)*/ {
+    ) external returns (uint256) {
         uint256 nftId = nftToken.createItem(msg.sender, uri);
-        //listings[nftId] = Listing(msg.sender, price, uri);
+        listingsMap[nftId] = Listing(nftId,msg.sender, price, uri);
         listings.push(Listing({
                 nftId: nftId,
                 seller: msg.sender,
                 price: price,
                 uri: uri
             }));
-        //return nftId;
+        emit NewListing(msg.sender, nftId, /*name, description,*/ price, uri);
+        return nftId;
     }
 
     /// @notice Pay for a listing
     /// @dev Buyer pays the price for the listing, which can be withdrawn by the seller later; emits an event
     /// @return requestId The id of the reencryption request associated with the purchase
     function buyListing(uint256 nftId) external payable returns (string memory) {
-        Listing memory listing = listings[nftId];
+        Listing memory listing = listingsMap[nftId];
         if (listing.seller == address(0)) {
             revert ListingDoesNotExist();
         }
-        if (msg.value < listing.price) {
+        /*if (msg.value < listing.price ) {
             revert InsufficentFunds();
-        }
-        _asyncTransfer(listing.seller, msg.value);
+        }*/
+
+        paymentToken.transferFrom(msg.sender, listing.seller, msg.value);
+
+        //_asyncTransfer(listing.seller, msg.value);
         //sales[msg.sender]=nftId;
         //uint256 requestId = oracle.requestReencryption(cipherId, buyerPublicKey);
-        //emit NewSale(msg.sender, listing.seller, nftId, nftId);
+        emit NewSale(msg.sender, listing.seller, listing.nftId, listing.uri);
         return listing.uri;
     }
+
+    /// @notice Gives tokens based on the amount of ETH sent
+    /// @dev This implementation is prone to rounding problems
+    function purchaseTokens() external payable {
+        paymentToken.mint(msg.sender, msg.value * purchaseRatio);
+    }
+
+    /// @notice Burns `amount` tokens and give the equivalent ETH back to user
+    function returnTokens(uint256 amount) external {
+        paymentToken.burnFrom(msg.sender, amount);
+        payable(msg.sender).transfer(amount / purchaseRatio);
+    }
+
 
 
 }
