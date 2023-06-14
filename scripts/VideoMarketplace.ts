@@ -9,7 +9,7 @@ let token: VideoMarketPlaceERC20Token;
 let accounts: SignerWithAddress[];
 
 let videoCount = 0;
-const BET_FEE = 0.2;
+const BET_FEE = 0.01;
 const TOKEN_RATIO = 1;
 
 async function main() {
