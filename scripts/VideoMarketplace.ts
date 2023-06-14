@@ -122,8 +122,7 @@ async function buyVideo(index: string, nftId: string) {
   //console.log(tx);
   const receipt = await tx.wait();
 
-  console.log(`Video added (${receipt.transactionHash}) `);
-  videoCount++;
+  console.log(`Video listed (${receipt.transactionHash}) `);
 }
 
 async function mainMenu(rl: readline.Interface) {

@@ -46,7 +46,8 @@ async function main() {
 
   const deployTxReceipt = await tokenContract.deployTransaction.wait();
 
-  console.log(`The contract was deployed at the address ${tokenContract.address} at the block number ${deployTxReceipt.blockNumber}`)
+  const tokenAddress = await tokenContract.paymentToken();
+  console.log(`The contract was deployed at the address ${tokenContract.address} at the block number ${deployTxReceipt.blockNumber} with token address ${tokenAddress}`)
 
 
 }
