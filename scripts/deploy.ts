@@ -9,7 +9,7 @@ dotenv.config();
 //const MINT_VALUE = ethers.utils.parseUnits("100");
 //const medusaAddress = "0xf1d5A4481F44fe0818b6E7Ef4A60c0c9b29E3118";
 const BET_FEE = 0.01;
-const TOKEN_RATIO = 1;
+const TOKEN_RATIO = 10000;
 
 async function main() {
 
@@ -46,7 +46,7 @@ async function main() {
 
   const deployTxReceipt = await tokenContract.deployTransaction.wait();
 
-  console.log(`The ballot contract was deployed at the address ${tokenContract.address} at the block number ${deployTxReceipt.blockNumber}`)
+  console.log(`The contract was deployed at the address ${tokenContract.address} at the block number ${deployTxReceipt.blockNumber}`)
 
 
 }
