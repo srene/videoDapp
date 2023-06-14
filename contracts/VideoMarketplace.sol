@@ -6,11 +6,7 @@ import {VideoMarketPlaceERC20Token} from "./VideoMarketPlaceERC20Token.sol";
 import {VideoList} from "./VideoList.sol";
 import {PullPayment} from "@openzeppelin/contracts/security/PullPayment.sol";
 
-struct Listing {
-    address seller;
-    uint256 price;
-    string uri;
-}
+
 
 error CallbackNotAuthorized();
 error ListingDoesNotExist();
@@ -18,6 +14,12 @@ error InsufficentFunds();
 
 contract VideoMarketPlace is Ownable,PullPayment {
 
+    struct Listing {
+        uint256 nftId;
+        address seller;
+        uint256 price;
+        string uri;
+    }
     /// @notice Address of the token used as payment for the videos
     VideoMarketPlaceERC20Token public paymentToken;
     /// @notice Video NFTtoken 
@@ -27,7 +29,9 @@ contract VideoMarketPlace is Ownable,PullPayment {
     /// @notice Amount of tokens required for placing a bet that goes for the owner pool
     uint256 public marketFee;
 
-    mapping(uint256 => Listing) public listings;
+    Listing[] public listings;
+
+    //mapping(uint256 => Listing) public listings;
 
     mapping(address => uint256) public sales;
 
@@ -52,10 +56,16 @@ contract VideoMarketPlace is Ownable,PullPayment {
     function createListing(
         uint256 price,
         string calldata uri
-    ) external returns (uint256) {
+    ) external /*returns (uint256)*/ {
         uint256 nftId = nftToken.createItem(msg.sender, uri);
-        listings[nftId] = Listing(msg.sender, price, uri);
-        return nftId;
+        //listings[nftId] = Listing(msg.sender, price, uri);
+        listings.push(Listing({
+                nftId: nftId,
+                seller: msg.sender,
+                price: price,
+                uri: uri
+            }));
+        //return nftId;
     }
 
     /// @notice Pay for a listing

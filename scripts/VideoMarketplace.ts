@@ -23,7 +23,6 @@ async function main() {
 
 async function initAccounts() {
   accounts = await ethers.getSigners();
-  console.log(accounts);
 }
 
 
@@ -34,20 +33,31 @@ async function initContracts() {
   const tokenAddress = await contract.paymentToken();
   const tokenFactory = new VideoMarketPlaceERC20Token__factory();
   token = tokenFactory.attach(tokenAddress).connect(accounts[0]);
-  console.log("Deployed lottery contract to address "+contract.address);
+  console.log("Deployed video market contract to address "+contract.address);
   console.log("Deployed Token contract to address "+token.address);
 }
 
 async function listVideos() {
+  console.log(contract.listings.length);
+
   const list = await contract.listings(0);
-  console.log(list);
+  console.log(`Video added ${list.nftId} from ${list.seller} price ${ethers.utils.formatUnits(list.price)} uri:${list.uri}`);
 }
 
 async function addVideo() {
 
   const tx = await contract.createListing(ethers.utils.parseEther("0.001"),"bafybeig25u4k34jyxl3osbk3eexk3osmz7udpk2xazqromn4nivqnjymwa");
+  console.log(tx);
   const receipt = await tx.wait();
+
   console.log(`Video added (${receipt.transactionHash}) `);
+
+
+  /*const tx2 = await contract.createListing(ethers.utils.parseEther("0.001"),"bafybeig25u4k34jyxl3osbk3eexk3osmz7udpk2xazqromn4nivqnjymwa");
+  const receipt2 = await tx2.wait();
+  console.log(tx2);
+
+  console.log(`Video added (${receipt2.transactionHash}) `);*/
 }
 
 async function mainMenu(rl: readline.Interface) {
